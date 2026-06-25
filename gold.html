@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ماشین‌حساب طلا</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Vazirmatn', Tahoma, sans-serif; background: #0f1117; color: #e8e0cc; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .card { background: #1a1c25; border: 1px solid #2e2a1f; border-radius: 16px; padding: 36px 32px; width: 100%; max-width: 420px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); }
+  .header { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+  .gold-icon { width: 44px; height: 44px; background: linear-gradient(135deg, #c8a84b, #f0d060); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  h1 { font-size: 18px; font-weight: 700; color: #f0d060; line-height: 1.4; }
+  h1 span { display: block; font-size: 12px; font-weight: 400; color: #7a7060; margin-top: 2px; }
+  .field { margin-bottom: 20px; }
+  label { display: block; font-size: 13px; color: #9a9080; margin-bottom: 8px; font-weight: 400; }
+  .input-wrap { position: relative; }
+  input[type="number"] { width: 100%; background: #12141c; border: 1px solid #2e2a1f; border-radius: 10px; padding: 13px 16px 13px 60px; font-family: 'Vazirmatn', Tahoma, sans-serif; font-size: 15px; color: #e8e0cc; outline: none; transition: border-color 0.2s; direction: ltr; text-align: right; }
+  input[type="number"]:focus { border-color: #c8a84b; }
+  input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .unit { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 11px; color: #6a6050; pointer-events: none; font-weight: 600; }
+  .divider { border: none; border-top: 1px solid #2e2a1f; margin: 8px 0 24px; }
+  .carat-row { display: flex; gap: 8px; margin-bottom: 20px; }
+  .carat-btn { flex: 1; padding: 10px 6px; background: #12141c; border: 1px solid #2e2a1f; border-radius: 8px; color: #9a9080; font-family: 'Vazirmatn', Tahoma, sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; font-weight: 600; }
+  .carat-btn:hover { border-color: #c8a84b; color: #e8e0cc; }
+  .carat-btn.active { background: #c8a84b22; border-color: #c8a84b; color: #f0d060; }
+  .result-box { background: linear-gradient(135deg, #1e1a0e, #251f0a); border: 1px solid #c8a84b44; border-radius: 12px; padding: 20px; text-align: center; margin-top: 4px; }
+  .result-label { font-size: 11px; color: #7a7060; margin-bottom: 8px; font-weight: 600; }
+  .result-value { font-size: 28px; font-weight: 700; color: #f0d060; direction: ltr; }
+  .result-unit { font-size: 13px; color: #9a8040; margin-top: 4px; }
+  .sub-results { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .sub-box { background: #12141c; border: 1px solid #2e2a1f; border-radius: 8px; padding: 12px; text-align: center; }
+  .sub-label { font-size: 10px; color: #6a6050; margin-bottom: 4px; }
+  .sub-value { font-size: 14px; font-weight: 600; color: #c8c0a0; direction: ltr; }
+  .formula-note { margin-top: 20px; font-size: 11px; color: #4a4438; text-align: center; direction: ltr; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="gold-icon">🏅</div>
+    <h1>ماشین‌حساب طلا<span>قیمت هر گرم بر اساس انس جهانی</span></h1>
+  </div>
+  <div class="field">
+    <label>قیمت انس جهانی طلا</label>
+    <div class="input-wrap">
+      <input type="number" id="ounce" placeholder="مثال: 3300" min="0">
+      <span class="unit">USD</span>
+    </div>
+  </div>
+  <div class="field">
+    <label>نرخ دلار (تومان)</label>
+    <div class="input-wrap">
+      <input type="number" id="dollar" placeholder="مثال: 95000" min="0">
+      <span class="unit">تومان</span>
+    </div>
+  </div>
+  <hr class="divider">
+  <label style="margin-bottom:10px; display:block;">عیار طلا</label>
+  <div class="carat-row">
+    <button class="carat-btn active" data-carat="1">۲۴ عیار</button>
+    <button class="carat-btn" data-carat="0.75">۱۸ عیار</button>
+    <button class="carat-btn" data-carat="0.583">۱۴ عیار</button>
+  </div>
+  <div class="result-box">
+    <div class="result-label">قیمت هر گرم طلا</div>
+    <div class="result-value" id="main-result">—</div>
+    <div class="result-unit">تومان</div>
+  </div>
+  <div class="sub-results">
+    <div class="sub-box"><div class="sub-label">هر گرم (دلار)</div><div class="sub-value" id="usd-result">—</div></div>
+    <div class="sub-box"><div class="sub-label">هر مثقال (تومان)</div><div class="sub-value" id="mithqal-result">—</div></div>
+  </div>
+  <div class="formula-note">انس ÷ 31.1035 × نرخ دلار × عیار</div>
+</div>
+<script>
+  const TROY = 31.1035, MITHQAL = 4.608;
+  let carat = 1;
+  document.querySelectorAll('.carat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.carat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      carat = parseFloat(btn.dataset.carat);
+      calculate();
+    });
+  });
+  document.getElementById('ounce').addEventListener('input', calculate);
+  document.getElementById('dollar').addEventListener('input', calculate);
+  function formatNum(n) { return (!n && n!==0) ? '—' : Math.round(n).toLocaleString('fa-IR'); }
+  function formatUSD(n) { return (!n && n!==0) ? '—' : n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function calculate() {
+    const ounce = parseFloat(document.getElementById('ounce').value);
+    const dollar = parseFloat(document.getElementById('dollar').value);
+    if (!ounce || !dollar) { ['main-result','usd-result','mithqal-result'].forEach(id => document.getElementById(id).textContent='—'); return; }
+    const gramUSD = (ounce/TROY)*carat;
+    const gramTOMAN = gramUSD*dollar;
+    document.getElementById('main-result').textContent = formatNum(gramTOMAN);
+    document.getElementById('usd-result').textContent = formatUSD(gramUSD);
+    document.getElementById('mithqal-result').textContent = formatNum(gramTOMAN*MITHQAL);
+  }
+</script>
+</body>
+</html>
